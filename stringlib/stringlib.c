@@ -1,7 +1,6 @@
 #include "stringlib.h"
-#include <string.h>
 
-char *   corgasm_stringlib_strrev(char *str)
+char * corgasm_stringlib_strrev(char * str)
 {
 	char *p1, *p2 = NULL;
 
@@ -17,23 +16,22 @@ char *   corgasm_stringlib_strrev(char *str)
 	return str;
 }
 
-void     corgasm_stringlib_clear(string * str)
+void corgasm_stringlib_clear(string * self)
 {
-	if (str && str->data)
+	if (self && self->data)
 	{
-		free(str->data);
-		str->data = NULL;
-		str->length = 0;
+		free(self->data);
+		self->data = NULL;
+		self->length = 0;
 	}
 }
 
-void     corgasm_stringlib_destroy(string *str)
+void corgasm_stringlib_destroy(string * self)
 {
-	if (str)
+	if (self)
 	{
-		stringlib.clear(str);
-		free(str);
-		str = NULL;
+		stringlib.clear(self);
+		free(self);
 	}
 }
 
@@ -48,80 +46,80 @@ string * corgasm_stringlib_new_string()
 	return str;
 }
 
-string * corgasm_stringlib_add_char(string * str, char c)
+string * corgasm_stringlib_add_char(string * self, char c)
 {
 	char buffer[2] = {c};
 	string * str2  = stringlib.new_string_from(buffer);
-	         str   =  stringlib.concat(str, str2);
+	         self   =  stringlib.concat(self, str2);
 	stringlib.destroy(str2);
-	return str;
+	return self;
 }
 
-string * corgasm_stringlib_concat(string *str1, string *str2)
+string * corgasm_stringlib_concat(string * self, string * second)
 {
-	if (str1 && str2)
+	if (self && second && second->length)
 	{
-		char *new_data_for_str1 = malloc((str1->length * str2->length + 1) * sizeof(char));
-		if (new_data_for_str1)
+		char *new_data_for_self = malloc((self->length * second->length + 1) * sizeof(char));
+		if (new_data_for_self)
 		{
-			if (str1->data)
+			if (self->data)
 			{
-				strcpy(new_data_for_str1, str1->data);
-				if (str2->data)
-					strcat(new_data_for_str1, str2->data);
+				strcpy(new_data_for_self, self->data);
+				if (second->data)
+					strcat(new_data_for_self, second->data);
 			}
 			else
-				if (str2->data)
-					strcpy(new_data_for_str1, str2->data);
-			str1->data = new_data_for_str1;
-			str1->length = str1->length + str2->length;
+				if (second->data)
+					strcpy(new_data_for_self, second->data);
+			self->data = new_data_for_self;
+			self->length = self->length + second->length;
 		}
 	}
-	return str1;
+	return self;
 }
 
-size_t   corgasm_stringlib_length(string *str)
+size_t corgasm_stringlib_length(string * self)
 {
-	return str ? str->length : 0;
+	return self ? self->length : 0;
 }
 
-int      corgasm_stringlib_compare(string *str1, string *str2)
+int corgasm_stringlib_compare(string * self, string * other)
 {
 	int result = -1;
-	if (str1 && str2 && str1->data && str2->data)
-		result = strcmp(str1->data, str2->data);
+	if (self && other && self->data && other->data)
+		result = strcmp(self->data, other->data);
 	return result;
 }
 
-bool     corgasm_stringlib_are_same(string *str1, string *str2)
+bool corgasm_stringlib_are_same(string * self, string * second)
 {
-	return !(stringlib.compare(str1, str2));
+	return !(stringlib.compare(self, second));
 }
 
-string * corgasm_stringlib_to_lower(string *str)
+string * corgasm_stringlib_to_lower(string * self)
 {
-	if (str)
-		for (size_t i = 0; i < str->length; i++)
-			str->data[i] = (char)tolower(str->data[i]);
-	return str;
+	if (self)
+		for (size_t i = 0; i < self->length; i++)
+			self->data[i] = (char)tolower(self->data[i]);
+	return self;
 }
 
-string * corgasm_stringlib_to_upper(string *str)
+string * corgasm_stringlib_to_upper(string * self)
 {
-	if (str)
-		for (size_t i = 0; i < str->length; i++)
-			str->data[i] = (char)toupper(str->data[i]);
-	return str;
+	if (self)
+		for (size_t i = 0; i < self->length; i++)
+			self->data[i] = (char)toupper(self->data[i]);
+	return self;
 }
 
-string * corgasm_stringlib_reverse(string *str)
+string * corgasm_stringlib_reverse(string *self)
 {
-	if (str && str->data)
-		strrev(str->data);
-	return str;
+	if (self && self->data)
+		corgasm_stringlib_strrev(self->data);
+	return self;
 }
 
-string * corgasm_stringlib_new_string_from(const char *str)
+string * corgasm_stringlib_new_string_from(const char * str)
 {
 	string *new_str = stringlib.new_string();
 	if (new_str)
@@ -138,70 +136,70 @@ string * corgasm_stringlib_new_string_from(const char *str)
 	return new_str;
 }
 
-bool     corgasm_stringlib_all_accepted_by(string * str, int (*func)(int))
+bool corgasm_stringlib_all_accepted_by(string * self, int (*f)(int))
 {
 	bool result = false;
-	if (str)
+	if (self)
 	{
 		result = true;
-		for (size_t  i = 0; i < str->length && result; i++)
-			result = func(str->data[i]);
+		for (size_t  i = 0; i < self->length && result; i++)
+			result = f(self->data[i]);
 	}
 	return result;
 }
 
-bool     corgasm_stringlib_isalpha(string * str)
+bool corgasm_stringlib_isalpha(string * self)
 {
-	return corgasm_stringlib_all_accepted_by(str, isalpha);
+	return corgasm_stringlib_all_accepted_by(self, isalpha);
 }
 
-bool     corgasm_stringlib_isdigit(string * str)
+bool corgasm_stringlib_isdigit(string * self)
 {	
-	return corgasm_stringlib_all_accepted_by(str, isdigit);
+	return corgasm_stringlib_all_accepted_by(self, isdigit);
 }
 
-bool     corgasm_stringlib_islower(string * str)
+bool corgasm_stringlib_islower(string * self)
 {
-	return corgasm_stringlib_all_accepted_by(str, islower);
+	return corgasm_stringlib_all_accepted_by(self, islower);
 }
 
-bool     corgasm_stringlib_isupper(string * str)
+bool corgasm_stringlib_isupper(string * self)
 {
-	return corgasm_stringlib_all_accepted_by(str, isupper);
+	return corgasm_stringlib_all_accepted_by(self, isupper);
 }
 
-bool     corgasm_stringlib_isalnum(string * str)
+bool corgasm_stringlib_isalnum(string * self)
 {
-	return corgasm_stringlib_all_accepted_by(str, isalnum);
+	return corgasm_stringlib_all_accepted_by(self, isalnum);
 }
 
-char *   corgasm_stringlib_extract(string * str)
+char * corgasm_stringlib_extract(string * self)
 {
-	return str ? str->data : NULL;
+	return self ? self->data : NULL;
 }
 
-bool 	 corgasm_stringlib_starts_with(string * str, const char * start)
+bool corgasm_stringlib_starts_with(string * self, const char * start)
 {
 	bool res = 0;
-	if (str && start)
+	if (self && start)
 	{
 		size_t len_start = strlen(start);
-		if (len_start < str->length && str->data)
-			res = !memcmp(start, str->data, len_start);
+		if (len_start < self->length && self->data)
+			res = !memcmp(start, self->data, len_start);
 	}
 	return res;
 }
 
-bool     corgasm_stringlib_starts_with_string(string * str, string * start)
+bool corgasm_stringlib_starts_with_string(string * self, string * prefix)
 {
 	bool result = false;
-	if (str && start && start->data)
-		result = stringlib.startswith(str, start->data);
+	if (self && prefix && prefix->data)
+		result = stringlib.startswith(self, prefix->data);
 	return result;
 }
 
-void corgasm_stringlib_destroy_wrapped(void * str)
+void corgasm_stringlib_destroy_wrapped(void * self)
 {
-	if (str)
-		stringlib.destroy((string*)str);
+	if (self)
+		stringlib.destroy((string*)self);
 }
