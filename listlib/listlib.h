@@ -208,9 +208,9 @@ static const corgasm_listlib_functions listlib =
         .clear           = corgasm_listlib_clear,
 };
 
-#define foreach(type, varname, iterable)       for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable); current = listlib.next(current), varname = (type)(current->data))
+#define foreach(type, varname, iterable)       for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable); current = listlib.next(current), varname = current ? (type)(current->data) : NULL)
 
-#define foreach_condition(type, varname, iterable, also) for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable) && also; current = listlib.next(current), varname = (type)(current->data))
+#define foreach_condition(type, varname, iterable, also) for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable) && also; current = listlib.next(current), varname = current ? (type)(current->data) : NULL)
 
 #define fornode_condition(varname, iterable, also)       for (node *varname = listlib.begin(iterable); varname != listlib.end(iterable) && also; varname = listlib.next(varname))
 
