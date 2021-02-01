@@ -164,6 +164,14 @@ void * corgasm_listlib_set(list * self, size_t index, void * data);
  */
 void corgasm_listlib_clear(list * self);
 
+/**
+ * @brief Extracts data from the given node
+ * @param[in] node * node to extract from
+ * @return void * data
+ * @warning Can return NULL if node pointer is NULL or data is NULL
+ */
+void * corgasm_listlib_extract(node * n);
+
 typedef struct corgasm_listlib_functions
 {
     void    (*destroy_wrapped) (void * self);
@@ -183,6 +191,7 @@ typedef struct corgasm_listlib_functions
     list *  (*new_list)        (void (*destructor)(void *));
     node *  (*next)            (node * current);
     node *  (*new_node)        (void * data);
+    void *  (*extract)         (node * n);
 } corgasm_listlib_functions;
 
 
@@ -206,15 +215,17 @@ static const corgasm_listlib_functions listlib =
         .destroy_wrapped = corgasm_listlib_destroy_wrapped,
         .set             = corgasm_listlib_set,
         .clear           = corgasm_listlib_clear,
+        .extract         = corgasm_listlib_extract,
 };
 
-#define foreach(type, varname, iterable)       for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable); current = listlib.next(current), varname = current ? (type)(current->data) : NULL)
+#define foreach_condition(type, varname, iterable, condition)    node * varname##_current = listlib.begin(iterable);   for (type varname = listlib.extract(varname##_current); varname##_current != listlib.end(iterable) && condition; varname##_current  = listlib.next(varname##_current), varname = (type)(listlib.extract(varname##_current)))
 
-#define foreach_condition(type, varname, iterable, also) for (node *current = listlib.begin(iterable), type varname = (type)(current->data); current != listlib.end(iterable) && also; current = listlib.next(current), varname = current ? (type)(current->data) : NULL)
+#define foreach(type, varname, iterable)  foreach_condition(type, varname, iterable, true)
 
-#define fornode_condition(varname, iterable, also)       for (node *varname = listlib.begin(iterable); varname != listlib.end(iterable) && also; varname = listlib.next(varname))
 
-#define fornode(varname, iterable)             for (node *varname = listlib.begin(iterable); varname != listlib.end(iterable); varname = listlib.next(varname))
+#define fornode_condition(varname, iterable, condition)  for (node *varname = listlib.begin(iterable); varname != listlib.end(iterable) && condition; varname = listlib.next(varname))
+
+#define fornode(varname, iterable)   foreach_condition(varname, iterable, true)
 
 
 #endif /* __CORGASM_LISTLIB_H__ */

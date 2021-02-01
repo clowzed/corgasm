@@ -218,3 +218,8 @@ void * corgasm_listlib_set(list * self, size_t index, void * new_ptr)
     }
     return last;
 }
+
+void * corgasm_listlib_extract(node * n)
+{
+    return n ? n->data : NULL;
+}
