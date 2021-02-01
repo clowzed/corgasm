@@ -225,7 +225,7 @@ static const corgasm_listlib_functions listlib =
 
 #define fornode_condition(varname, iterable, condition)  for (node *varname = listlib.begin(iterable); varname != listlib.end(iterable) && condition; varname = listlib.next(varname))
 
-#define fornode(varname, iterable)   foreach_condition(varname, iterable, true)
+#define fornode(varname, iterable)   fornode_condition(varname, iterable, true)
 
 
 #endif /* __CORGASM_LISTLIB_H__ */
