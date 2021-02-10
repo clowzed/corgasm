@@ -14,50 +14,6 @@ bool corgasm_menulib_has_choice(menu * self, size_t key)
 
 
 
-/*
-@brief This reads menu from file
-@param[in] menu * menu_ pointer to structure of menu
-@param[in] const char * filename name of the file to load load_from
-@return menu_error_code code of error
-*/
-
-bool corgasm_menulib_load_from(menu * self, const char * filename)
-{
-	bool    was_loaded_correctly = false;
-	string * message_buffer     = stringlib.new_string();
-	size_t key_buffer           = 0;
-
-	FILE * menu_file = fopen(filename, "r");
-
-	if (menu_file && message_buffer)
-	{
-		while (true && was_loaded_correctly)
-		{
-			stringlib.clear(message_buffer);
-			key_buffer = 0;
-
-			int scanf_result = fscanf(menu_file, "%zu", &key_buffer);
-			if (scanf_result == 1)
-			{
-				char c = '\0';
-				while (c = fgetc(menu_file) != EOF)
-				{
-					if (c == '`')
-						break;
-					else
-						stringlib.add_char(message_buffer, c);
-				}
-				was_loaded_correctly = menulib.add_choice(self, key_buffer, stringlib.extract(message_buffer));
-			}
-			else
-				was_loaded_correctly = false;
-		}
-	}
-	stringlib.destroy(message_buffer);
-	fclose(menu_file);
-
-	return was_loaded_correctly;
-}
 
 choice * corgasm_menulib_new_choice(size_t key, const char * message)
 {
@@ -100,7 +56,6 @@ void corgasm_menulib_remove_choice(menu * self, size_t key)
 	if (self && menulib.has_choice(self, key))
 	{
 		choice * choice_to_remove = NULL;
-		choice * current_choice   = NULL;
 
 		foreach_condition(choice *, current_choice, self->choices, !choice_to_remove)
 			if (current_choice && current_choice->key == key) choice_to_remove  = current_choice;
@@ -153,14 +108,13 @@ choice * corgasm_menulib_ask_for_choice(menu * self)
 
 		if (fgets(user_input_buffer, 10, stdin))
 		{
-			int sscanf_res = sscanf(user_input_buffer, "%zu", &key_buffer);
+			int sscanf_res = sscanf(user_input_buffer, "%u", &key_buffer);
 
 			// ! Can cause UB
 			fflush(stdin);
 
 			if (sscanf_res)
 			{
-				choice * current_choice = NULL;
 
 				foreach_condition(choice *, current_choice, self->choices, !found_choice)
 					if (current_choice->key == key_buffer) found_choice = current_choice;
