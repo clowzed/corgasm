@@ -11,8 +11,11 @@ all: building run
 
 building: clean $(target)
 
-libs_c_files = ../listlib/listlib.c ../stringlib/stringlib.c
-libs_h_files = ../listlib/listlib.h ../stringlib/stringlib.h
+dependencies = listlib stringlib
+
+
+libs_c_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.c))
+libs_h_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.h))
 
 c_files      = $(wildcard *.c) $(libs_c_files)
 header_files = $(wildcard *.h) $(libs_h_files)
@@ -22,7 +25,7 @@ $(info found .c files: $(c_files))
 $(info found .h files: $(header_files))
 
 %.o: %.c $(header_files)
-	$(info building object file: $@)
+	$(info building object_files: $(object_files))
 	$(compiler) $(compiler_flags) -c $< -o $@
 
 .precious: $(target) $(object_files)
