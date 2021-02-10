@@ -11,8 +11,11 @@ all: building run
 
 building: clean $(target)
 
-libs_c_files =
-libs_h_files =
+dependencies = stringlib listlib
+
+
+libs_c_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.c))
+libs_h_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.h))
 
 c_files      = $(wildcard *.c) $(libs_c_files)
 header_files = $(wildcard *.h) $(libs_h_files)
