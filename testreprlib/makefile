@@ -1,8 +1,8 @@
-target       = $(notdir $(CURDIR))
-unit_target  = unit_$(target)
+executable_target = $(notdir $(CURDIR))
+unit_target       = unit_$(executable_target)
 
 
-upper_target =  $(shell echo $(target) | tr a-z A-Z)
+uppercase_exetuable_target =  $(shell echo $(executable_target) | tr a-z A-Z)
 
 
 
@@ -21,9 +21,9 @@ $(info .......... $(unit_test_build_compiler_flags))
 $(info )
 
 ifeq ($(MAKECMDGOALS), test)
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_TEST_$(upper_target)
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_TEST_$(uppercase_exetuable_target)
 else
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_BUILD_$(upper_target)
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_BUILD_$(uppercase_exetuable_target)
 endif
 
 $(info object files compiling flags:)
@@ -36,10 +36,11 @@ $(info )
 
 all: clean building run
 
-building: $(target)
+building: $(executable_target)
 
 
 dependencies = stringlib listlib tablelib
+
 
 ifneq ($(dependencies), )
 $(info dependencies:)
@@ -56,10 +57,18 @@ $(info  )
 endif
 
 
-lib_c_files = $(wildcard *.c) $(dependencies_c_files)
-
+lib_c_files_ = $(wildcard *.c)
 ifneq ($(lib_c_files), )
 $(info library source files:)
+$(foreach lib_c_file, $(lib_c_files_), $(info .......... $(lib_c_file)))
+$(info )
+endif
+
+
+lib_c_files = $(lib_c_files_) $(dependencies_c_files)
+
+ifneq ($(lib_c_files), )
+$(info Sourse files that will be compiled:)
 $(foreach lib_c_file, $(lib_c_files), $(info .......... $(lib_c_file)))
 $(info  )
 endif
@@ -71,8 +80,6 @@ $(info library unit tests source files:)
 $(foreach unit_c_file, $(unit_c_files), $(info .......... $(unit_c_file)))
 $(info  )
 endif
-
-
 
 object_files = $(addsuffix .o, $(basename $(lib_c_files)))
 
@@ -98,15 +105,15 @@ endif
 	$(compiler) $(object_compiler_flags) -c $< -o $@
 
 
-$(target) : $(object_files)
+$(executable_target) : $(object_files)
 	$(info )
 	$(info building target: $(target))
 	$(compiler) $(build_compiler_flags) $(object_files) -o $@
 
 run:
 	$(info )
-	$(info running target: $(target))
-	./$(target)
+	$(info running target: $(executable_target))
+	./$(executable_target)
 	$(info )
 
 clean:
