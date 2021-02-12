@@ -65,12 +65,24 @@ bool corgasm_testreprlib_register_test_(test_suit * self, test_function_pointer 
 
 bool corgasm_testreprlib_run(test_suit * self)
 {
-    fprintf(self->outstream, "Suit name: %s\n", stringlib.extract(self->name));
+    char passed_message[] = "passed";
+    char failed_message[] = "failed";
+    bool all_tests_passed = true;
+    table * test_results = tablelib.new_table(3, "suit name", "test function name", "was passed");
     foreach(test_function *, test, self->test_functions)
     {
-        printf("run test %s: %d\n", stringlib.extract(test->name), test->func());
+        bool passed = test->func();
+        all_tests_passed = all_tests_passed && passed;
+        tablelib.add_line(test_results,
+                          stringlib.extract(self->name),
+                          stringlib.extract(test->name),
+                          passed ? passed_message : failed_message);
     }
-    return true;
+    char * result_message = all_tests_passed ? passed_message : failed_message;
+    tablelib.add_line(test_results, stringlib.extract(self->name), "tests were passed", result_message);
+    tablelib.show(test_results);
+    tablelib.destroy(test_results);
+    return all_tests_passed;
 }
 
 test_suit * corgasm_testreprlib_destroy_suit(test_suit * self)
@@ -90,23 +102,31 @@ void corgasm_testreprlib_destroy_test_function_wrapped(void * func)
         corgasm_testreprlib_destroy_test_function((test_function *)func);
 }
 
+int corgasm_testreprlib_return_code(bool were_passed)
+{
+    return were_passed ? 0 : 1;
+}
+
+#ifdef LIB_BUILD_TESTREPRLIB
 
 bool test_one()
 {
     return true;
 }
 
-#ifdef LIB_BUILD_TESTREPRLIB
-
+bool test_two()
+{
+    return true;
+}
 
 int main()
 {
     test_suit * suit = testreprlib.new_suit("tests");
     testreprlib.register_test(suit, test_one);
-    testreprlib.run(suit);
+    testreprlib.register_test(suit, test_two);
+    bool were_passed = testreprlib.run(suit);
     suit = testreprlib.destroy(suit);
-    printf("Correct");
-    return 0;
+    return testreprlib.return_code(were_passed);
 }
 
 #endif

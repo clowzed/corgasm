@@ -39,17 +39,19 @@ all: clean building run
 building: $(target)
 
 
-dependencies = stringlib listlib
+dependencies = stringlib listlib tablelib
 
 ifneq ($(dependencies), )
-$(info dependencies: $(dependencies))
+$(info dependencies:)
+$(foreach dependency, $(dependencies) , $(info .......... $(dependency)))
 $(info  )
 endif
 
 dependencies_c_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.c))
 
 ifneq ($(dependencies_c_files), )
-$(info dependencies source files: $(dependencies_c_files))
+$(info dependencies source files:)
+$(foreach dependency_source_file, $(dependencies_c_files), $(info .......... $(dependency_source_file)))
 $(info  )
 endif
 
@@ -75,7 +77,7 @@ endif
 object_files = $(addsuffix .o, $(basename $(lib_c_files)))
 
 ifneq ($(object_files), )
-$(info library object files that will be compiled: $(object_files))
+$(info library object files that will be compiled:)
 $(foreach object_file, $(object_files), $(info .......... $(object_file)))
 $(info )
 endif
@@ -105,17 +107,17 @@ run:
 	$(info )
 	$(info running target: $(target))
 	./$(target)
-	$(info)
+	$(info )
 
 clean:
 	$(info )
 	$(info cleaning from old files...)
 	rm -f $(object_files)
-	rm -f $(unit_object_files)
+	rm -f $(subst $(object_files),,$(unit_object_files))
 	rm -f $(unit_target)
 	rm -f $(target)
 	rm -f $(unit_target)
-	$(info)
+	$(info )
 
 test: clean $(unit_target) run_unit
 
@@ -124,6 +126,7 @@ run_unit:
 	$(info )
 	$(info running unit tests: $(unit_target))
 	./$(unit_target)
+	$(info )
 
 $(unit_target) : $(unit_object_files)
 	$(info )
