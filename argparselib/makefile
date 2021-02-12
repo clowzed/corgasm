@@ -1,5 +1,10 @@
-target       = libexecutable
-unit_target  = unit_libexecutable
+executable_target = $(notdir $(CURDIR))
+unit_target       = unit_$(executable_target)
+
+
+uppercase_exetuable_target =  $(shell echo $(executable_target) | tr a-z A-Z)
+
+
 
 compiler = gcc
 $(info setted compiler: $(compiler))
@@ -16,9 +21,9 @@ $(info .......... $(unit_test_build_compiler_flags))
 $(info )
 
 ifeq ($(MAKECMDGOALS), test)
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_TEST
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_TEST_$(uppercase_exetuable_target)
 else
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_BUILD
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_BUILD_$(uppercase_exetuable_target)
 endif
 
 $(info object files compiling flags:)
@@ -29,35 +34,46 @@ $(info )
 
 .phony: clean, building, run, test
 
-all: clean building run test
+all: clean building run
 
-building: $(target)
+building: $(executable_target)
 
 
 dependencies = stringlib listlib
 
+
 ifneq ($(dependencies), )
-$(info dependencies: $(dependencies))
+$(info dependencies:)
+$(foreach dependency, $(dependencies) , $(info .......... $(dependency)))
 $(info  )
 endif
 
 dependencies_c_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.c))
 
 ifneq ($(dependencies_c_files), )
-$(info dependencies source files: $(dependencies_c_files))
+$(info dependencies source files:)
+$(foreach dependency_source_file, $(dependencies_c_files), $(info .......... $(dependency_source_file)))
 $(info  )
 endif
 
 
-lib_c_files = $(wildcard *.c) $(dependencies_c_files)
-
+lib_c_files_ = $(wildcard *.c)
 ifneq ($(lib_c_files), )
 $(info library source files:)
-$(foreach lib_c_file, $(lib_c_files), $(info .......... $(lib_c_files)))
+$(foreach lib_c_file, $(lib_c_files_), $(info .......... $(lib_c_file)))
+$(info )
+endif
+
+
+lib_c_files = $(lib_c_files_) $(dependencies_c_files)
+
+ifneq ($(lib_c_files), )
+$(info Sourse files that will be compiled:)
+$(foreach lib_c_file, $(lib_c_files), $(info .......... $(lib_c_file)))
 $(info  )
 endif
 
-unit_c_files = $(dependencies_c_files) $(wildcard ./unit/*.c) $(lib_c_files)
+unit_c_files = $(wildcard ./unit/*.c) $(lib_c_files)
 
 ifneq ($(wildcard ./unit/*.c), )
 $(info library unit tests source files:)
@@ -65,12 +81,10 @@ $(foreach unit_c_file, $(unit_c_files), $(info .......... $(unit_c_file)))
 $(info  )
 endif
 
-
-
 object_files = $(addsuffix .o, $(basename $(lib_c_files)))
 
 ifneq ($(object_files), )
-$(info library object files that will be compiled: $(object_files))
+$(info library object files that will be compiled:)
 $(foreach object_file, $(object_files), $(info .......... $(object_file)))
 $(info )
 endif
@@ -91,26 +105,26 @@ endif
 	$(compiler) $(object_compiler_flags) -c $< -o $@
 
 
-$(target) : $(object_files)
+$(executable_target) : $(object_files)
 	$(info )
 	$(info building target: $(target))
 	$(compiler) $(build_compiler_flags) $(object_files) -o $@
 
 run:
 	$(info )
-	$(info running target: $(target))
-	./$(target)
-	$(info)
+	$(info running target: $(executable_target))
+	./$(executable_target)
+	$(info )
 
 clean:
 	$(info )
 	$(info cleaning from old files...)
 	rm -f $(object_files)
-	rm -f $(unit_object_files)
+	rm -f $(subst $(object_files),,$(unit_object_files))
 	rm -f $(unit_target)
 	rm -f $(target)
 	rm -f $(unit_target)
-	$(info)
+	$(info )
 
 test: clean $(unit_target) run_unit
 
@@ -119,6 +133,7 @@ run_unit:
 	$(info )
 	$(info running unit tests: $(unit_target))
 	./$(unit_target)
+	$(info )
 
 $(unit_target) : $(unit_object_files)
 	$(info )
