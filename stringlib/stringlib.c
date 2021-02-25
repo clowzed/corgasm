@@ -59,7 +59,7 @@ string * corgasm_stringlib_concat(string * self, string * second)
 {
 	if (self && second && second->length)
 	{
-		char *new_data_for_self = malloc((self->length * second->length + 1) * sizeof(char));
+		char *new_data_for_self = malloc((self->length + second->length + 1) * sizeof(char));
 		if (new_data_for_self)
 		{
 			if (self->data)
