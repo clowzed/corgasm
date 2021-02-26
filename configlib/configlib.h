@@ -47,7 +47,7 @@ typedef struct corgasm_configlib_functions
     section *      (*destroy_section)(section * self);
     configparser * (*new_configparser)(const char * filename);
     configparser * (*destroy)(configparser * self);
-    string       * (*get)(const char * section_name, const char * key);
+    string       * (*get)(configparser * self, const char * section_name, const char * key);
     void           (*represent)(configparser * self);
 } corgasm_configlib_functions;
 
@@ -55,7 +55,7 @@ section *      corgasm_configlib_new_section(const char * name);
 section *      corgasm_configlib_destroy_section(section * self);
 configparser * corgasm_configlib_new_configparser(const char * filename);
 configparser * corgasm_configlib_destroy(configparser * self);
-string *       corgasm_configlib_get(const char * section_name, const char * key);
+string *       corgasm_configlib_get(configparser * self, const char * section_name, const char * key);
 void           corgasm_configlib_destroy_section_wrapped(void * self);
 void           corgasm_configlib_represent(configparser * self);
 

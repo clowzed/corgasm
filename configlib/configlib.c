@@ -35,7 +35,6 @@ section * corgasm_configlib_destroy_section(section * self)
     return NULL;
 }
 
-#define info printf("state = %d c = %c\n", current_state, current_char);
 
 bool corgasm_configlib_parse(configparser *self, FILE *stream)
 {
@@ -50,7 +49,6 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
     {
         while_reading(current_char, stream, current_state != error_occured)
         {
-            info
             switch (current_state)
             {
 
@@ -119,32 +117,19 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
 
                 case find_end_of_value:
                 {
-                    printf("7\n");
-                    printf("cont = %d\n", alphabet_contains(current_char, find_end_of_value));
                     if (alphabet_contains(current_char, find_end_of_value))
                     {
                         if (current_char == '\n')
                         {
-                            printf("1");
                             dictlib.set(current_section->data,
                                         stringlib.extract(current_key_name),
                                         stringlib.new_string_from(stringlib.extract(current_value)));
-                            printf("2");
                             stringlib.clear(current_value);
                             stringlib.clear(current_key_name);
-                            printf("3");
                             current_state = find_key_name;
                         }
                         else
-                        {
-                            printf("-\n");
-                            printf("current_value: %p\n", current_value);
-                            printf("data: %s\n", stringlib.extract(current_value));
-                            printf("current_value->length: %d\n", current_value->length);
-                            printf("current_char: %c\n", current_char);
                             stringlib.add_char(current_value, current_char);
-                            printf("-\n");
-                        }
                     }
                     else
                         current_state = error_occured;
@@ -156,7 +141,6 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
             }
         }
     }
-    printf("Here!");
     if (current_state != error_occured && current_value && current_value->length)
         dictlib.set(current_section->data,
                     stringlib.extract(current_key_name),
@@ -214,9 +198,22 @@ void corgasm_configlib_represent(configparser * self)
     }
 }
 
-string * corgasm_configlib_get(uu const char * section_name, uu const char * key)
+string * corgasm_configlib_get(configparser * self, const char * section_name, const char * key)
 {
-    return NULL;
+    string * result = NULL;
+    if (section_name && key)
+    {
+        string *  section_name_repr   = stringlib.new_string_from(section_name);
+        section * result_section = NULL;
+        foreach_condition(section *, current_section, self->sections, !result_section)
+        {
+            if (stringlib.are_same(section_name_repr, current_section->name))
+                result_section = current_section;
+        }
+        if (result_section)
+            result = dictlib.get(result_section->data, key);
+    }
+    return result;
 }
 
 #ifdef LIB_BUILD_CONFIGLIB
@@ -225,6 +222,7 @@ int main()
 {
     configparser * parser = configlib.new_configparser("./conf.ini");
     printf("Parser: %p\n", parser);
+    printf("libname: %s\n", stringlib.extract(configlib.get(parser, "default", "libname")));
     configlib.represent(parser);
     configlib.destroy(parser);
     return 0;
