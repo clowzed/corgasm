@@ -192,6 +192,14 @@ int corgasm_stringlib_compare(string * self, string * other);
  */
 char * corgasm_stringlib_extract(string *);
 
+/**
+ * @brief Trims a string
+ * @param[in] string * self pointer to string
+ * @return string * trimmed string
+ */
+string * corgasm_stringlib_trim(string * self);
+
+
 
 typedef struct corgasm_stringlib_functions
 {
@@ -202,6 +210,7 @@ typedef struct corgasm_stringlib_functions
 	string * (*to_upper)		 (string * self);
 	string * (*to_lower)		 (string * self);
 	string * (*reverse)			 (string * self);
+    string * (*trim)             (string * self);
 	size_t   (*length)			 (string * self);
 	int 	 (*compare)			 (string * self, string *     other);
 	char * 	 (*extract)			 (string * self);
@@ -239,6 +248,7 @@ static const corgasm_stringlib_functions stringlib = {
 		.new_string        = corgasm_stringlib_new_string,
 		.new_string_from   = corgasm_stringlib_new_string_from,
 		.reverse           = corgasm_stringlib_reverse,
+		.trim              = corgasm_stringlib_trim,
 		.startswith        = corgasm_stringlib_starts_with,
 		.startswith_string = corgasm_stringlib_starts_with_string,
 		.to_lower          = corgasm_stringlib_to_lower,

@@ -16,6 +16,25 @@ char * corgasm_stringlib_strrev(char * str)
 	return str;
 }
 
+char * ltrim(char *s)
+{
+    while(isspace(*s)) s++;
+    return s;
+}
+
+char * rtrim(char *s)
+{
+    char* back = s + strlen(s);
+    while(isspace(*--back));
+    *(back + 1) = '\0';
+    return s;
+}
+
+char * trim(char *s)
+{
+    return rtrim(ltrim(s));
+}
+
 void corgasm_stringlib_clear(string * self)
 {
 	if (self && self->data)
@@ -202,4 +221,18 @@ void corgasm_stringlib_destroy_wrapped(void * self)
 {
 	if (self)
 		stringlib.destroy((string*)self);
+}
+
+string * corgasm_stringlib_trim(string * self)
+{
+	if (self)
+	{
+		char * trimmed = trim(self->data);
+		char* new_data = strdup(trimmed);
+		size_t len = strlen(new_data);
+		stringlib.clear(self);
+		self->data = new_data;
+		self->length = len;
+	}
+	return self;
 }
