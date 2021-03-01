@@ -236,3 +236,16 @@ string * corgasm_stringlib_trim(string * self)
 	}
 	return self;
 }
+
+#ifdef LIB_BUILD_STRINGLIB
+
+int main()
+{
+	string * name = stringlib.new_string_from("  Name  ");
+	name = stringlib.trim(name);
+	printf("|%s|\n", stringlib.extract(name));
+	stringlib.destroy(name);
+	return 0;
+}
+
+#endif
