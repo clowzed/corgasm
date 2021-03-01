@@ -122,8 +122,8 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
                         if (current_char == '\n')
                         {
                             dictlib.set(current_section->data,
-                                        stringlib.extract(current_key_name),
-                                        stringlib.new_string_from(stringlib.extract(current_value)));
+                                        stringlib.extract(stringlib.trim(current_key_name)),
+                                        stringlib.new_string_from(stringlib.extract(stringlib.trim(current_value))));
                             stringlib.clear(current_value);
                             stringlib.clear(current_key_name);
                             current_state = find_key_name;
@@ -143,8 +143,8 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
     }
     if (current_state != error_occured && current_value && current_value->length)
         dictlib.set(current_section->data,
-                    stringlib.extract(current_key_name),
-                    stringlib.new_string_from(stringlib.extract(current_value)));
+                    stringlib.extract(stringlib.trim(current_key_name)),
+                    stringlib.new_string_from(stringlib.extract(stringlib.trim(current_value))));
     return was_parsed;
 }
 
