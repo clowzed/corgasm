@@ -11,16 +11,16 @@
 <h1 align="center"> <br>Libraries status<br></h1>
 
 <!---
-| lib name | written | works | tested | docs written | docs |
+| lib name    | written | works | tested | docs written | docs |
 | ----------- | ------- | ----- | ------ | ------------ | ---- |
-| argparselib | ✅ | ✅ | ❌ | ❌ | |
-| arraylib | ✅ | ✅ | ❌ | ❌ | |
-| listlib | ✅ | ✅ | ❌ | ❌ | |
-| loglib | ✅ | ✅ | ❌ | ❌ | |
-| menulib | ✅ | ✅ | ❌ | ❌ | |
-| stringlib | ✅ | ✅ | ❌ | ❌ | |
-| tablelib | ✅ | ✅ | ❌ | ❌ | |
-| testreprlib | ✅ | ✅ | ❌ | ❌ | |
+| argparselib | ✅      | ✅    | ❌     | ❌           |      |
+| arraylib    | ✅      | ✅    | ❌     | ❌           |      |
+| listlib     | ✅      | ✅    | ❌     | ❌           |      |
+| loglib      | ✅      | ✅    | ❌     | ❌           |      |
+| menulib     | ✅      | ✅    | ❌     | ❌           |      |
+| stringlib   | ✅      | ✅    | ❌     | ❌           |      |
+| tablelib    | ✅      | ✅    | ❌     | ❌           |      |
+| testreprlib | ✅      | ✅    | ❌     | ❌           |      |
 
 https://www.mobilefish.com/services/markdown/markdown.php
 Place converted html table into this div
