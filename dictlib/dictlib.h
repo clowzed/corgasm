@@ -60,6 +60,7 @@ __attribute__((unused)) static size_t primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23
 
 typedef struct corgasm_dictlib_dict
 {
+    list  * keys;
     array * data;
     size_t  size;
     size_t (*hash_function)(const char * key, size_t size);

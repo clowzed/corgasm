@@ -1,6 +1,5 @@
 #include "./dictlib.h"
 
-
 size_t corgasm_dictlib_get_prime_nearby(size_t size)
 {
     for (size_t i = 0; i < 500; i++)
@@ -24,13 +23,14 @@ dict * corgasm_dictlib_new_dict(size_t size)
     dict * new_dict = NULL;
     if (size <= 3571)
     {
-        new_dict = malloc(sizeof(dict));
+        new_dict                = malloc(sizeof(dict));
         new_dict->hash_function = hash;
-        new_dict->size = corgasm_dictlib_get_prime_nearby(size);
-        new_dict->data = arraylib.new_array(NULL);
+        new_dict->size          = corgasm_dictlib_get_prime_nearby(size);
+        new_dict->data          = arraylib.new_array(NULL);
+        new_dict->keys          = listlib.new_list(stringlib.destroy_wrapped);
         for (size_t i = 0; i < new_dict->size; i++)
             arraylib.append(new_dict->data, NULL);
-        if (!new_dict->data || !new_dict->size)
+        if (!new_dict->data || !new_dict->size || !new_dict->keys)
             new_dict = dictlib.destroy(new_dict, NULL);
     }
     return new_dict;
@@ -43,14 +43,22 @@ dict * corgasm_dictlib_destroy(dict * self, void (*destructor)(void *))
         if (destructor)
             dictlib.destroy_data(self, destructor);
         arraylib.destroy(self->data);
+        listlib.destroy(self->keys);
         free(self);
     }
     return NULL;
 }
 
-void corgasm_dictlib_destroy_data(__attribute__((unused)) dict * self, __attribute__((unused)) void (*destructor)(void *))
+void corgasm_dictlib_destroy_data(dict * self, void (*destructor)(void *))
 {
-    return;
+    if (self && destructor)
+    {
+        foreach(string *, key, self->keys)
+        {
+            void * inner_data = dictlib.get(self, stringlib.extract(key));
+            destructor(inner_data);
+        }
+    }
 }
 
 void * corgasm_dictlib_set(dict * self, const char * key, void * value)
@@ -77,20 +85,19 @@ void * corgasm_dictlib_get(dict * self, const char * key)
 }
 
 
-
-
-
-
 #ifdef LIB_BUILD_DICTLIB
 int main()
 {
-    char name[] = "Kate";
-    char surname[] = "Dilinger";
+    char   name[]       = "Kate";
+    char   surname[]    = "Dilinger";
     dict * persons_info = dictlib.new_dict(3571);
-    dictlib.set(persons_info, "name", name);
+
+    dictlib.set(persons_info, "name",    name);
     dictlib.set(persons_info, "surname", surname);
+
     printf("%s\n", dictlib.get(persons_info, "name"));
     printf("%s\n", dictlib.get(persons_info, "surname"));
+
     dictlib.destroy(persons_info, NULL);
     return 0;
 }
