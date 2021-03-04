@@ -31,7 +31,6 @@ typedef struct corgasm_menulib_menu
  *
  */
 bool     corgasm_menulib_add_choice       (menu * self, size_t key, const char * message);
-void     corgasm_menulib_remove_choice    (menu * self, size_t key);
 bool     corgasm_menulib_has_choice       (menu * self, size_t key);
 choice * corgasm_menulib_ask_for_choice   (menu * self);
 menu *   corgasm_menulib_new_menu         ();
@@ -56,7 +55,6 @@ typedef struct corgasm_menulib_functions
 	menu *   (*new_menu)                    ();
 	bool     (*add_choice)                  (menu * self, size_t key, const char * message);
 	bool     (*has_choice)                  (menu * self, size_t key);
-	void     (*remove_choice)               (menu * self, size_t key);
 	void     (*clear)                       (menu * self);
 	void     (*show)                        (menu * self);
 	size_t   (*ask_for_key)                 (menu * self);
@@ -71,7 +69,6 @@ static const corgasm_menulib_functions menulib = {
 	.new_menu                     = corgasm_menulib_new_menu,
 	.add_choice                   = corgasm_menulib_add_choice,
 	.has_choice                   = corgasm_menulib_has_choice,
-	.remove_choice                = corgasm_menulib_remove_choice,
 	.clear                        = corgasm_menulib_clear,
 	.show                         = corgasm_menulib_show,
 	.ask_for_key                  = corgasm_menulib_ask_for_key,

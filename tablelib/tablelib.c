@@ -1,6 +1,5 @@
 #include "tablelib.h"
 
-
 table * corgasm_tablelib_new_table(size_t headers_amount, ...)
 {
     table * new_table = malloc(sizeof(table));

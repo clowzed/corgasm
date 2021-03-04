@@ -1,11 +1,3 @@
-/**
- * @file   tablelib.h
- * @author clowzed.exe
- * @date   15 Jan 2021
- * @brief  File containing functions signatures and structures typedefs for table module
- * @see    https://github.com/clowzed/corgasm
- */
-
 #ifndef __CORGASM_TABLELIB_H__
 #define __CORGASM_TABLELIB_H__
 

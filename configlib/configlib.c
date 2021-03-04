@@ -182,34 +182,21 @@ configparser * corgasm_configlib_destroy(configparser * self)
     return NULL;
 }
 
-void corgasm_configlib_represent(configparser * self)
-{
-    if (self)
-    {
-        foreach(section *, current_section, self->sections)
-        {
-            printf("section name: %s\n", stringlib.extract(current_section->name));
-            for (size_t i = 0; i < 300; i++)
-            {
-                void * data = current_section->data->data->data[i];
-                if (data) printf("value : %s\n", stringlib.extract((string *)data));
-            }
-        }
-    }
-}
 
 string * corgasm_configlib_get(configparser * self, const char * section_name, const char * key)
 {
     string * result = NULL;
     if (section_name && key)
     {
-        string *  section_name_repr   = stringlib.new_string_from(section_name);
-        section * result_section = NULL;
+        string  * section_name_repr   = stringlib.new_string_from(section_name);
+        section * result_section      = NULL;
+
         foreach_condition(section *, current_section, self->sections, !result_section)
         {
             if (stringlib.are_same(section_name_repr, current_section->name))
                 result_section = current_section;
         }
+
         if (result_section)
             result = dictlib.get(result_section->data, key);
     }
@@ -221,9 +208,7 @@ string * corgasm_configlib_get(configparser * self, const char * section_name, c
 int main()
 {
     configparser * parser = configlib.new_configparser("./conf.ini");
-    printf("Parser: %p\n", parser);
     printf("libname: %s\n", stringlib.extract(configlib.get(parser, "default", "libname")));
-    configlib.represent(parser);
     configlib.destroy(parser);
     return 0;
 }

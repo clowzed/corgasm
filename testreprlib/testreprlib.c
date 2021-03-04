@@ -1,7 +1,5 @@
 #include "testreprlib.h"
 
-
-
 test_function * corgasm_testreprlib_new_test_function(test_function_pointer func, const char * func_name)
 {
     test_function * new_test_function = NULL;

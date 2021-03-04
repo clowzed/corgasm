@@ -5,6 +5,10 @@
 #include "../stringlib/stringlib.h"
 #include "../arraylib/arraylib.h"
 
+
+// This is so bad i know
+// I'm sorry
+// I'll rewrite this as soon as possible
 __attribute__((unused)) static size_t primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89,
 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151,
@@ -57,32 +61,32 @@ __attribute__((unused)) static size_t primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23
 typedef struct corgasm_dictlib_dict
 {
     array * data;
-    size_t size;
+    size_t  size;
     size_t (*hash_function)(const char * key, size_t size);
 }dict;
 
-size_t hash(const char * key, size_t size);
-dict * corgasm_dictlib_new_dict(size_t size);
-dict * corgasm_dictlib_destroy(dict * self, void (*destructor)(void *));
-void corgasm_dictlib_destroy_data(dict * self, void (*destructor)(void *));
-void * corgasm_dictlib_set(dict * self, const char * key, void * value);
-void * corgasm_dictlib_get(dict * self, const char * key);
+size_t hash                        (const char * key, size_t size);
+dict * corgasm_dictlib_new_dict    (size_t size);
+dict * corgasm_dictlib_destroy     (dict * self, void (*destructor)(void *));
+void   corgasm_dictlib_destroy_data(dict * self, void (*destructor)(void *));
+void * corgasm_dictlib_set         (dict * self, const char * key, void * value);
+void * corgasm_dictlib_get         (dict * self, const char * key);
 
 typedef struct corgasm_dictlib_functions
 {
-    dict * (*new_dict)(size_t size);
-    dict * (*destroy)(dict * self, void (*destructor)(void *));
+    dict * (*new_dict)    (size_t size);
+    dict * (*destroy)     (dict * self, void (*destructor)(void *));
     void   (*destroy_data)(dict * self, void (*destructor)(void *));
-    void * (*set)(dict * self, const char * key, void * value);
-    void * (*get)(dict * self, const char * key);
+    void * (*set)         (dict * self, const char * key, void * value);
+    void * (*get)         (dict * self, const char * key);
 }corgasm_dictlib_functions;
 
 static const corgasm_dictlib_functions dictlib = {
-    .new_dict = corgasm_dictlib_new_dict,
-    .destroy  = corgasm_dictlib_destroy,
+    .new_dict     = corgasm_dictlib_new_dict,
+    .destroy      = corgasm_dictlib_destroy,
     .destroy_data = corgasm_dictlib_destroy_data,
     .set          = corgasm_dictlib_set,
-    .get = corgasm_dictlib_get,
+    .get          = corgasm_dictlib_get,
 };
 
-#endif /* __CORGASM_DICTLIB_ */
+#endif /* __CORGASM_DICTLIB_H__ */
