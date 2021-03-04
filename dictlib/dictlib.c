@@ -68,7 +68,11 @@ void * corgasm_dictlib_set(dict * self, const char * key, void * value)
     {
         size_t index = self->hash_function(key, self->size);
         previous_data = arraylib.get(self->data, index);
-        arraylib.set(self->data, index, value);
+        if (!previous_data)
+        {
+            arraylib.set(self->data, index, value);
+            listlib.append(self->keys, (void *)(stringlib.new_string_from(key)));
+        }
     }
     return previous_data;
 }
