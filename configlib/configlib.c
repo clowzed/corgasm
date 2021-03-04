@@ -144,6 +144,9 @@ bool corgasm_configlib_parse(configparser *self, FILE *stream)
         dictlib.set(current_section->data,
                     stringlib.extract(stringlib.trim(current_key_name)),
                     stringlib.new_string_from(stringlib.extract(stringlib.trim(current_value))));
+    stringlib.destroy(current_section_name);
+    stringlib.destroy(current_key_name);
+    stringlib.destroy(current_value);
     return was_parsed;
 }
 
@@ -198,6 +201,7 @@ string * corgasm_configlib_get(configparser * self, const char * section_name, c
 
         if (result_section)
             result = dictlib.get(result_section->data, key);
+        stringlib.destroy(section_name_repr);
     }
     return result;
 }
