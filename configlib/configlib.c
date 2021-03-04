@@ -211,6 +211,7 @@ string * corgasm_configlib_get(configparser * self, const char * section_name, c
 int main()
 {
     configparser * parser = configlib.new_configparser("./conf.ini");
+    printf("parsed!\n");
     printf("libname: %s\n", stringlib.extract(configlib.get(parser, "default", "libname")));
     configlib.destroy(parser);
     return 0;
