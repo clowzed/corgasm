@@ -6,7 +6,7 @@ avl_tree *corgasm_treelib_avllib_new_avl_tree(short (*comparator)(const void *fi
     avl_tree *self = NULL;
     if (comparator)
     {
-        self = malloc(sizeof(avl_tree));
+        self = (avl_tree *)memtestlib.malloc(manager, sizeof(avl_tree), file_information);
         if (self)
         {
             self->comparator = comparator;
@@ -27,13 +27,14 @@ short corgasm_treelib_avllib_height(avl_node *node)
 
 avl_node * corgasm_treelib_avllib_new_node()
 {
-    avl_node * new_node = malloc(sizeof(avl_node));
+    avl_node * new_node = (avl_node *)memtestlib.malloc(manager, sizeof(avl_node), file_information);
     if (new_node)
     {
         new_node->left   = NULL;
         new_node->right  = NULL;
         new_node->data   = NULL;
         new_node->height = 1;
+
     }
     return new_node;
 }
@@ -82,7 +83,13 @@ avl_node * corgasm_treelib_avllib_destroy_node(avl_node * node, void (*destructo
     if (node)
     {
         if (destructor && node->data)
-            destructor(node->data);
+        {
+            if (destructor == free)
+                memtestlib.free(manager, node->data, file_information);
+            else
+                destructor(node->data);
+        }
+        memtestlib.free(manager, node, file_information);
     }
     return NULL;
 }
@@ -156,12 +163,22 @@ bool corgasm_treelib_avllib_insert(avl_tree * self, void * data)
     return was_inserted;
 }
 
+void corgasm_treelib_avllib_reqursive_destroy(avl_node * node, void (*destructor) (void *data))
+{
+    if (node)
+    {
+        corgasm_treelib_avllib_reqursive_destroy(node->right, destructor);
+        corgasm_treelib_avllib_reqursive_destroy(node->left, destructor);
+        corgasm_treelib_avllib_destroy_node(node, destructor);
+    }
+}
+
 void corgasm_treelib_avllib_destroy(avl_tree * self)
 {
     if (self)
     {
-        while (self->root)
-            avllib.delete(self, self->root->data);
+        corgasm_treelib_avllib_reqursive_destroy(self->root, self->destructor);
+        memtestlib.free(manager, self, file_information);
     }
 }
 
@@ -265,22 +282,28 @@ void printPreOrder(avl_node * root)
 
 short cmp(const void * a, const void * b)
 {
-    return *(int *)a - *(int *)b;
+    if (a && b)
+        return *(int *)a - *(int *)b;
+    return 0;
 }
 
 int main()
 {
+    manager = memtestlib.new_memanager("avllib");
     avl_tree * data = avllib.new_avl_tree(cmp, free);
     for (int i = 0; i < 1000; i++)
     {
-        void * a = malloc(sizeof(int));
+        void * a = memtestlib.malloc(manager, sizeof(int), file_information);
         *(int*)a = 1000 - i;
-        printf("%d\n", avllib.insert(data, a));
+        avllib.insert(data, a);
     }
-    printPreOrder(data->root);
+    //printPreOrder(data->root);
     printf("Start of destruction!\n");
     avllib.destroy(data);
+    memtestlib.short_report(manager);
+    memtestlib.destroy_memanager(manager);
     printf("Sucess!\n");
+    return 0;
 }
 
 #endif

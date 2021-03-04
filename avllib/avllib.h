@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "../memtestlib/memtestlib.h"
+
 typedef struct avl_node
 {
     struct avl_node * right;
@@ -36,7 +38,7 @@ typedef struct corgasm_treelib_avllib_functions
     void       (*destroy)(avl_tree * self);
     bool       (*insert) (avl_tree * self, void * data);
     short      (*height) (avl_node * node);
-    void       (*delete) (avl_tree * self, const void * data);
+    void       (*delete_) (avl_tree * self, const void * data);
 }corgasm_treelib_avllib_functions;
 
 avl_tree * corgasm_treelib_avllib_new_avl_tree  (short (*comparator)(const void *first, const void *second), void (*destructor)(void *data));
@@ -49,17 +51,20 @@ avl_node * corgasm_treelib_avllib_min_node      (avl_node * node);
 
 short      corgasm_treelib_avllib_balance_factor(avl_node * node);
 short      corgasm_treelib_avllib_height        (avl_node * node);
-bool corgasm_treelib_avllib_insert(avl_tree * self, void * data);
+bool       corgasm_treelib_avllib_insert(avl_tree * self, void * data);
 void       corgasm_treelib_avllib_delete        (avl_tree * self, const void * data);
 void       corgasm_treelib_avllib_destroy       (avl_tree * self);
 
+
+
+static memanager * manager = NULL;
 
 static const corgasm_treelib_avllib_functions avllib = {
     .new_avl_tree = corgasm_treelib_avllib_new_avl_tree,
     .destroy      = corgasm_treelib_avllib_destroy,
     .insert       = corgasm_treelib_avllib_insert,
     .height       = corgasm_treelib_avllib_height,
-    .delete       = corgasm_treelib_avllib_delete,
+    .delete_       = corgasm_treelib_avllib_delete,
 };
 
 #endif
