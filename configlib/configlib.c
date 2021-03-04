@@ -27,7 +27,6 @@ section * corgasm_configlib_destroy_section(section * self)
 {
     if (self)
     {
-        //! Add destroy data
         stringlib.destroy(self->name);
         dictlib.destroy(self->data, stringlib.destroy_wrapped);
         free(self);
