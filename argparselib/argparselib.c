@@ -103,6 +103,8 @@ void corgasm_argparselib_destroy(argument * first, ...)
         }
 
         va_end(arguments);
+        if (first)
+            argparselib.destroy_argument(first);
     }
 }
 
@@ -306,13 +308,13 @@ void corgasm_argparselib_show_argument(argument * self)
 {
     if (self)
     {
-        char format_string[] = "\n%-8s [%s, %s]\n\t required: %s\n\t Description: %s\n\n";
+        char format_string[] = "\n%-8s [%s, %s]\n\t Required: %s\n\t Description: %s\n\n";
         fprintf(stdout,
                 format_string,
                 self->is_argument? "argument" : "flag",
                 stringlib.extract(self->short_name),
                 self->long_name  ? stringlib.extract(self->long_name) : "no long name",
-                self->is_required? "required" : "not required",
+                self->is_required? "Required" : "Not required",
                 self->description? stringlib.extract(self->description) : "no description"
                 );
     }
@@ -345,6 +347,8 @@ int main(int argc, char **argv)
         argparselib.show_arguments( name_argument,
                                     unused_argument,
                                     help_flag);
+
+    argparselib.destroy_arguments(help_flag, name_argument, unused_argument);
 
     return 0;
 }

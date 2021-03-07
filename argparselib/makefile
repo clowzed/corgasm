@@ -39,7 +39,7 @@ all: clean building run
 building: $(executable_target)
 
 
-dependencies = stringlib listlib
+dependencies = stringlib listlib testreprlib tablelib
 
 
 ifneq ($(dependencies), )
@@ -139,3 +139,9 @@ $(unit_target) : $(unit_object_files)
 	$(info )
 	$(info building unit target: $(unit_target))
 	$(compiler) $(unit_test_build_compiler_flags) $(unit_object_files) -o $@
+
+memtest:$(executable_target)
+	drmemory.exe -ignore_kernel -show_reachable ./$(executable_target).exe
+
+memtest_u:$(unit_target)
+	drmemory.exe -ignore_kernel -show_reachable ./$(unit_target).exe
