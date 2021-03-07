@@ -318,7 +318,8 @@ void corgasm_argparselib_show_argument(argument * self)
     }
 }
 
-/*
+#ifdef LIB_BUILD_ARGPARSELIB
+
 int main(int argc, char **argv)
 {
     argument * help_flag       = argparselib.new_argument(FLAG,     NOT_REQUIRED, "-h", "--help",     "Display help message");
@@ -347,4 +348,5 @@ int main(int argc, char **argv)
 
     return 0;
 }
-*/
+
+#endif
