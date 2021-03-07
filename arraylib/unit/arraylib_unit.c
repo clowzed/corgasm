@@ -76,6 +76,7 @@ int main()
                        testreprlib.register_test(suit, test_set);
                        testreprlib.register_test(suit, test_get);
     bool were_passed = testreprlib.run(suit);
+                       testreprlib.destroy(suit);
     return testreprlib.return_code(were_passed);
 }
 
