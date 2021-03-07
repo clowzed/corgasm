@@ -9,21 +9,21 @@ uppercase_exetuable_target =  $(shell echo $(executable_target) | tr a-z A-Z)
 compiler = gcc
 $(info setted compiler: $(compiler))
 
-build_compiler_flags           = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99
+build_compiler_flags           = -g3 -O3 -Wall -Wshadow -Wextra -Werror -pedantic -std=c99
 $(info compiler build flags:)
 $(info .......... $(build_compiler_flags))
 $(info )
 
 
-unit_test_build_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99
+unit_test_build_compiler_flags = -g3 -O3 -Wall -Wshadow -Wextra -Werror -pedantic -std=c99
 $(info unit test build flags:)
 $(info .......... $(unit_test_build_compiler_flags))
 $(info )
 
 ifeq ($(MAKECMDGOALS), test)
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_TEST_$(uppercase_exetuable_target)
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Wshadow -Werror -pedantic -std=c99 -DLIB_TEST_$(uppercase_exetuable_target)
 else
-	object_compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99 -DLIB_BUILD_$(uppercase_exetuable_target)
+	object_compiler_flags = -g3 -O3 -Wall -Wextra -Wshadow -Werror -pedantic -std=c99 -DLIB_BUILD_$(uppercase_exetuable_target)
 endif
 
 $(info object files compiling flags:)
@@ -34,12 +34,12 @@ $(info )
 
 .phony: clean, building, run, test
 
-all: clean building run
+all: building run
 
 building: $(executable_target)
 
 
-dependencies =
+dependencies = stringlib listlib dictlib arraylib
 
 
 ifneq ($(dependencies), )
@@ -139,3 +139,6 @@ $(unit_target) : $(unit_object_files)
 	$(info )
 	$(info building unit target: $(unit_target))
 	$(compiler) $(unit_test_build_compiler_flags) $(unit_object_files) -o $@
+
+memtest:$(executable_target)
+	drmemory.exe -ignore_kernel -show_reachable ./$(executable_target).exe

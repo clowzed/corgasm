@@ -34,12 +34,12 @@ $(info )
 
 .phony: clean, building, run, test
 
-all: clean building run
+all: building run
 
 building: $(executable_target)
 
 
-dependencies =
+dependencies = stringlib listlib testreprlib tablelib arraylib
 
 
 ifneq ($(dependencies), )

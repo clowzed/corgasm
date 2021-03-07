@@ -11,10 +11,6 @@ bool corgasm_menulib_has_choice(menu * self, size_t key)
 	return was_found;
 }
 
-
-
-
-
 choice * corgasm_menulib_new_choice(size_t key, const char * message)
 {
 	choice * new_choice = NULL;
@@ -51,21 +47,6 @@ bool corgasm_menulib_add_choice(menu * self, size_t key, const char * message)
 	return was_added;
 }
 
-void corgasm_menulib_remove_choice(menu * self, size_t key)
-{
-	if (self && menulib.has_choice(self, key))
-	{
-		choice * choice_to_remove = NULL;
-
-		foreach_condition(choice *, current_choice, self->choices, !choice_to_remove)
-			if (current_choice && current_choice->key == key) choice_to_remove  = current_choice;
-
-		// ! MAKE REMOVE IN LISTLIB
-		//if (choice_to_remove)
-		//listlib.remove((void*)choice_to_remove);
-	}
-}
-
 void corgasm_menulib_clear(menu * self)
 {
 	if (self)
@@ -98,7 +79,7 @@ choice * corgasm_menulib_ask_for_choice(menu * self)
 {
 	menulib.show(self);
 
-	char     user_input_buffer[10] = "\0";
+	char     user_input_buffer[10]  = "\0";
 	size_t   key_buffer             = 0;
 	choice * found_choice           = NULL;
 
@@ -188,8 +169,8 @@ menu * corgasm_menulib_new_menu()
 			new_menu = menulib.destroy(new_menu);
 		else
 		{
-			bool correctly_setted = (menulib.set_format_string(new_menu, "[%d] - %s\n") ||\
-									 menulib.set_header(new_menu, "Welcome to menu!\nPlease, type number of your choice.\n"));
+			bool correctly_setted = ((menulib.set_format_string(new_menu, "[%d] - %s\n")) && \
+									 (menulib.set_header(new_menu, "Welcome to menu!\nPlease, type number of your choice.\n")));
 			if (!correctly_setted)
 				new_menu = menulib.destroy(new_menu);
 		}
@@ -212,3 +193,18 @@ void corgasm_menulib_destroy_choice_wrapped(void * ch)
 	if (ch)
 		corgasm_menulib_destroy_choice((choice *) ch);
 }
+
+
+#ifdef LIB_BUILD_MENULIB
+
+int main()
+{
+	menu * m = menulib.new_menu();
+	menulib.add_choice(m, 0, "Exit");
+	size_t key = menulib.ask_for_key(m);
+	printf("Key: %d\n", key);
+	menulib.destroy(m);
+	return 0;
+}
+
+#endif

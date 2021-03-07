@@ -16,6 +16,25 @@ char * corgasm_stringlib_strrev(char * str)
 	return str;
 }
 
+char * ltrim(char *s)
+{
+    while(isspace(*s)) s++;
+    return s;
+}
+
+char * rtrim(char *s)
+{
+    char* back = s + strlen(s);
+    while(isspace(*--back));
+    *(back + 1) = '\0';
+    return s;
+}
+
+char * trim(char *s)
+{
+    return rtrim(ltrim(s));
+}
+
 void corgasm_stringlib_clear(string * self)
 {
 	if (self && self->data)
@@ -48,10 +67,16 @@ string * corgasm_stringlib_new_string()
 
 string * corgasm_stringlib_add_char(string * self, char c)
 {
-	char buffer[2] = {c};
-	string * str2  = stringlib.new_string_from(buffer);
-	         self   =  stringlib.concat(self, str2);
-	stringlib.destroy(str2);
+	if (self)
+	{
+		char * new_data = realloc(self->data, (sizeof(char) * (self->length + 2)));
+		if (new_data)
+		{
+			self->data = new_data;
+			self->data[self->length++] = c;
+			self->data[self->length] = '\0';
+		}
+	}
 	return self;
 }
 
@@ -59,7 +84,9 @@ string * corgasm_stringlib_concat(string * self, string * second)
 {
 	if (self && second && second->length)
 	{
-		char *new_data_for_self = malloc((self->length * second->length + 1) * sizeof(char));
+
+		// ? Why not using realloc? No copying will be required
+		char *new_data_for_self = malloc((self->length + second->length + 1) * sizeof(char));
 		if (new_data_for_self)
 		{
 			if (self->data)
@@ -203,3 +230,30 @@ void corgasm_stringlib_destroy_wrapped(void * self)
 	if (self)
 		stringlib.destroy((string*)self);
 }
+
+string * corgasm_stringlib_trim(string * self)
+{
+	if (self)
+	{
+		char * trimmed = trim(self->data);
+		char * new_data = strdup(trimmed);
+		size_t len = strlen(new_data);
+		stringlib.clear(self);
+		self->data = new_data;
+		self->length = len;
+	}
+	return self;
+}
+
+#ifdef LIB_BUILD_STRINGLIB
+
+int main()
+{
+	string * name = stringlib.new_string_from("  Name  ");
+	name = stringlib.trim(name);
+	printf("|%s|\n", stringlib.extract(name));
+	stringlib.destroy(name);
+	return 0;
+}
+
+#endif

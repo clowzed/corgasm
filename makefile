@@ -1,44 +1,27 @@
-target = libexecutable
+libs = $(subst ./, ,$(wildcard ./*lib))
+$(info Found libs:)
+$(foreach lib, $(libs), $(info ................ $(lib)))
 
-compiler = gcc
-
-compiler_flags = -g3 -O3 -Wall -Wextra -Werror -pedantic -std=c99
-
-
-.phony: clean, building, run
-
-all: building run
-
-building: clean $(target)
-
-dependencies =
+define \n
 
 
-libs_c_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.c))
-libs_h_files = $(foreach dependency, $(dependencies), $(wildcard ../$(dependency)/*.h))
+endef
 
-c_files      = $(wildcard *.c) $(libs_c_files)
-header_files = $(wildcard *.h) $(libs_h_files)
-object_files = $(addsuffix .o, $(basename $(c_files)))
+all: clean
 
-$(info found .c files: $(c_files))
-$(info found .h files: $(header_files))
+clean: clean_targets clean_objects
 
-%.o: %.c $(header_files)
-	$(info building object_files: $(object_files))
-	$(compiler) $(compiler_flags) -c $< -o $@
+clean_targets:
+	$(info $(\n)Cleaning from executable targets)
+	$(foreach lib, $(libs), $(\n)rm -f ./$(lib)/**/*.exe)
 
-.precious: $(target) $(object_files)
+clean_objects:
+	$(info $(\n)Cleaning from object files)
+	$(foreach lib, $(libs), $(\n)rm -f ./$(lib)/**/*.o)
 
-$(target) : $(object_files)
-	$(info building target: $(target))
-	$(compiler) $(compiler_flags) $(object_files) -o $@
 
-run:
-	$(info running target: $(target))
-	./$(target)
-
-clean:
-	$(info cleaning from old files...)
-	rm -f $(object_files)
-	rm -f $(target)
+merge:
+	git add .
+	git commit -am "commit before merge"
+	git checkout dev
+	git merge $(libs)
