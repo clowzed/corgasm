@@ -319,38 +319,3 @@ void corgasm_argparselib_show_argument(argument * self)
                 );
     }
 }
-
-#ifdef LIB_BUILD_ARGPARSELIB
-
-int main(int argc, char **argv)
-{
-    argument * help_flag       = argparselib.new_argument(FLAG,     NOT_REQUIRED, "-h", "--help",     "Display help message");
-    argument * name_argument   = argparselib.new_argument(ARGUMENT, REQUIRED,     "-n", NO_LONG_NAME, "Sets names to show");
-    argument * unused_argument = argparselib.new_argument(ARGUMENT, NOT_REQUIRED, "-u", NO_LONG_NAME,  NO_DESCRIPTION);
-
-    bool args_parsed_correctly = argparselib.parse_arguments(argc, argv, name_argument, help_flag, unused_argument);
-
-
-
-    if (args_parsed_correctly)
-    {
-        list * names = argparselib.get_values(name_argument);
-        foreach(string *, name, names)
-            printf("Hello, %s!\n", stringlib.extract(name));
-
-        if (argparselib.setted(help_flag))
-            argparselib.show_arguments( name_argument,
-                                        unused_argument,
-                                        help_flag);
-    }
-    else
-        argparselib.show_arguments( name_argument,
-                                    unused_argument,
-                                    help_flag);
-
-    argparselib.destroy_arguments(help_flag, name_argument, unused_argument);
-
-    return 0;
-}
-
-#endif

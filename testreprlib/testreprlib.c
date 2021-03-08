@@ -104,27 +104,3 @@ int corgasm_testreprlib_return_code(bool were_passed)
 {
     return were_passed ? 0 : 1;
 }
-
-#ifdef LIB_BUILD_TESTREPRLIB
-
-bool test_one()
-{
-    return true;
-}
-
-bool test_two()
-{
-    return true;
-}
-
-int main()
-{
-    test_suit * suit = testreprlib.new_suit("tests");
-    testreprlib.register_test(suit, test_one);
-    testreprlib.register_test(suit, test_two);
-    bool were_passed = testreprlib.run(suit);
-    suit = testreprlib.destroy(suit);
-    return testreprlib.return_code(were_passed);
-}
-
-#endif

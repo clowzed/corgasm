@@ -87,22 +87,3 @@ void * corgasm_dictlib_get(dict * self, const char * key)
     }
     return value;
 }
-
-
-#ifdef LIB_BUILD_DICTLIB
-int main()
-{
-    char   name[]       = "Kate";
-    char   surname[]    = "Dilinger";
-    dict * persons_info = dictlib.new_dict(3571);
-
-    dictlib.set(persons_info, "name",    name);
-    dictlib.set(persons_info, "surname", surname);
-
-    printf("%s\n", dictlib.get(persons_info, "name"));
-    printf("%s\n", dictlib.get(persons_info, "surname"));
-
-    dictlib.destroy(persons_info, NULL);
-    return 0;
-}
-#endif

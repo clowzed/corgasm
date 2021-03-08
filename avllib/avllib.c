@@ -277,33 +277,3 @@ void printPreOrder(avl_node * root)
         printPreOrder(root->right);
     }
 }
-
-#ifdef LIB_BUILD_AVLLIB
-
-short cmp(const void * a, const void * b)
-{
-    if (a && b)
-        return *(int *)a - *(int *)b;
-    return 0;
-}
-
-int main()
-{
-    manager = memtestlib.new_memanager("avllib");
-    avl_tree * data = avllib.new_avl_tree(cmp, free);
-    for (int i = 0; i < 1000; i++)
-    {
-        void * a = memtestlib.malloc(manager, sizeof(int), file_information);
-        *(int*)a = 1000 - i;
-        avllib.insert(data, a);
-    }
-    //printPreOrder(data->root);
-    printf("Start of destruction!\n");
-    avllib.destroy(data);
-    memtestlib.short_report(manager);
-    memtestlib.destroy_memanager(manager);
-    printf("Sucess!\n");
-    return 0;
-}
-
-#endif

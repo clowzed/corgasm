@@ -346,25 +346,3 @@ void corgasm_memtest_full_report(memanager * manager)
         printf("\n");
     }
 }
-
-
-#ifdef LIB_BUILD_MEMTESTLIB
-
-int main()
-{
-    memanager * memory_manager = memtestlib.new_memanager("memory in main block");
-
-    void * data  = memtestlib.malloc(memory_manager, 10, file_information);
-    void * data2 = memtestlib.malloc(memory_manager, 30, file_information);
-
-    memtestlib.free(memory_manager, data, file_information);
-    memtestlib.realloc(memory_manager, data2, 3 + 7, file_information);
-    memtestlib.free(memory_manager, data2, file_information);
-
-    memtestlib.short_report(memory_manager);
-    memtestlib.full_report(memory_manager);
-
-    memory_manager = memtestlib.destroy_memanager(memory_manager);
-    return 0;
-}
-#endif

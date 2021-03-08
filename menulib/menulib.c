@@ -193,18 +193,3 @@ void corgasm_menulib_destroy_choice_wrapped(void * ch)
 	if (ch)
 		corgasm_menulib_destroy_choice((choice *) ch);
 }
-
-
-#ifdef LIB_BUILD_MENULIB
-
-int main()
-{
-	menu * m = menulib.new_menu();
-	menulib.add_choice(m, 0, "Exit");
-	size_t key = menulib.ask_for_key(m);
-	printf("Key: %d\n", key);
-	menulib.destroy(m);
-	return 0;
-}
-
-#endif
