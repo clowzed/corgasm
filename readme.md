@@ -8,6 +8,8 @@
     <br>
 </h1>
 
+[![CodeFactor](https://www.codefactor.io/repository/github/clowzed/corgasm/badge)](https://www.codefactor.io/repository/github/clowzed/corgasm)
+
 <h1 align="center"> <br>Libraries status<br></h1>
 
 <!---
