@@ -1060,12 +1060,3 @@ bool corgasm_qrclib_wifi(const char * authentication_type, const char * ssid, co
 	return was_encoded;
 }
 
-#ifdef LIB_BUILD_QRCLIB
-
-int main()
-{
-	qrclib.encode("hello", "wif_connect.ppm", 1920, qrclib.save_ppm);
-	return 0;
-}
-
-#endif
