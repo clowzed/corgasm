@@ -26,6 +26,7 @@
 | avllib      | 🟢    | 🟢  | 🔴   | 🔴         |
 | configlib   | 🟢    | 🟢  | 🔴   | 🔴         |
 | memtestlib  | 🟢    | 🟢  | 🔴   | 🔴         |
+| qrclib      | 🟢    | 🟢  | 🟢   | 🔴         |
 
 https://www.mobilefish.com/services/markdown/markdown.php
 Place converted html table into this div
@@ -118,6 +119,13 @@ Place converted html table into this div
                 <td align="center">🟢</td>
                 <td align="center">🟢</td>
                 <td align="center">🔴</td>
+                <td align="center">🔴</td>
+            </tr>
+            <tr>
+                <td align="center">qrclib</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
                 <td align="center">🔴</td>
             </tr>
         </tbody>
