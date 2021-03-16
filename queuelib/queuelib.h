@@ -11,19 +11,18 @@ typedef struct corgasm_queuelib_queue
 typedef struct corgasm_queuelib_functions
 {
     queue * (*new_queue)    ();
-    bool    (*put)          (      queue * self, const void * data);
+    bool    (*put)          (      queue * self, void * data);
     void  * (*get)          (const queue * self);
-    bool    (*empty)        (      queue * self);
+    bool    (*empty)        (const queue * self);
     bool    (*destroy)      (queue * self);
-    bool    (*destroy_with) (queue * self, void (*destructor)(void *))
-
+    bool    (*destroy_with) (queue * self, void (*destructor)(void *));
 }corgasm_queuelib_functions;
 
 
 queue * corgasm_queuelib_new_queue    ();
-bool    corgasm_queuelib_put          (      queue * self, const void * data);
+bool    corgasm_queuelib_put          (      queue * self, void * data);
 void  * corgasm_queuelib_get          (const queue * self);
-bool    corgasm_queuelib_empty        (      queue * self);
+bool    corgasm_queuelib_empty        (const queue * self);
 bool    corgasm_queuelib_destroy_with (      queue * self, void (*destructor)(void *));
 bool    corgasm_queuelib_destroy      (      queue * self);
 
