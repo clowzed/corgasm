@@ -8,7 +8,6 @@ list * corgasm_listlib_new_list(void (*destructor)(void *))
         new_list->destructor = destructor;
         new_list->length     = 0;
         new_list->head       = NULL;
-        new_list->tail       = NULL;
     }
     return new_list;
 }
@@ -18,8 +17,9 @@ node * corgasm_listlib_new_node(void * data)
     node * new_node = malloc(sizeof(node));
     if (new_node)
     {
-        new_node->data = data;
-        new_node->next = NULL;
+        new_node->data     = data;
+        new_node->next     = NULL;
+        new_node->previous = NULL;
     }
     return new_node;
 }
@@ -49,7 +49,6 @@ list * corgasm_listlib_destroy(list * self)
 
         self->destructor = NULL;
         self->head       = NULL;
-        self->tail       = NULL;
         self->length     = 0;
 
         free(self);
@@ -65,11 +64,18 @@ bool corgasm_listlib_append(list * self, void * data)
         node * new_node = listlib.new_node(data);
         if (new_node)
         {
-            if (!self->length) self->head        = new_node;
-            else               self->tail->next  = new_node;
-
-            self->tail    = new_node;
-            self->length += 1;
+            if (!self->length)
+                self->head        = new_node;
+            else
+            {
+                node * previous_node =  listlib.get(self, self->length - 1);
+                if (previous_node)
+                {
+                    new_node->previous = previous_node;
+                    previous_node->next = new_node;
+                }
+            }
+            self->length++;
             was_appended  = true;
         }
     }
@@ -79,26 +85,23 @@ bool corgasm_listlib_append(list * self, void * data)
 void * corgasm_listlib_pop(list * self)
 {
     void * popped_data = NULL;
-    if (self)
+    if (self && self->length)
     {
         if (self->length == 1)
         {
             popped_data = self->head->data;
+            free(self->head);
             self->head = NULL;
-            self->tail = NULL;
-            self->length = 0;
         }
-        else if (self->length > 1)
+        else
         {
-            node * penultimate_node = listlib.get(self,
-                                                  self->length - 2);
-            popped_data = penultimate_node->next->data;
-            listlib.destroy_node(penultimate_node->next,
-                                 NULL);
-            self->tail      = penultimate_node;
-            penultimate_node->next = NULL;
-            self->length--;
+            node * previous_node = listlib.get(self, self->length - 2);
+                   popped_data   = previous_node->next->data;
+
+            free(previous_node->next);
+            previous_node->next = NULL;
         }
+        self->length--;
     }
     return popped_data;
 }
@@ -144,7 +147,9 @@ bool corgasm_listlib_insert(list * self, void * data, size_t index)
                 node * current     = listlib.get(self, index);
 
                 before_node->next  = new_node;
+                new_node->previous = before_node;
                 new_node->next     = current;
+                current->previous  = new_node;
                 was_inserted       = true;
             }
         }
@@ -160,7 +165,7 @@ node * corgasm_listlib_begin(list * self)
 
 node * corgasm_listlib_end(list * self)
 {
-    node * end_node = self && self->tail ? self->tail->next : NULL;
+    node * end_node =   self? listlib.get(self, self->length - 1) : NULL;
     return end_node;
 }
 
@@ -223,3 +228,47 @@ void * corgasm_listlib_extract(node * n)
 {
     return n ? n->data : NULL;
 }
+
+
+bool corgasm_listlib_remove(list * self, size_t index)
+{
+    bool was_removed = false;
+
+    if (self && index < self->length)
+    {
+        if (index == 0)
+        {
+            node * node_to_remove = self->head;
+            self->head = node_to_remove->next;
+            self->destructor(node_to_remove->data);
+            free(node_to_remove);
+        }
+        else
+        {
+            node * node_to_remove = listlib.get(self, index);
+            node * previous_node  = node_to_remove->previous;
+            node * next_node      = node_to_remove->next;
+            self->destructor(node_to_remove->data);
+            previous_node->next  = next_node;
+            next_node->previous  = previous_node;
+            free(node_to_remove);
+        }
+        self->length--;
+        was_removed = true;
+    }
+    return was_removed;
+}
+
+#ifdef LIB_BUILD_LISTLIB
+
+int main()
+{
+    list * l = listlib.new_list(free);
+    for (size_t i = 0; i < 5; i++)
+        listlib.append(l, malloc(sizeof(int)));
+    for (size_t i = 0; i < 5; i++)
+        listlib.remove(l, 0);
+    listlib.destroy(l);
+}
+
+#endif

@@ -6,6 +6,7 @@
         "type_traits": "c",
         "tuple": "c",
         "utility": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "*.tcc": "c"
     }
 }

@@ -9,6 +9,7 @@
 typedef struct node
 {
     struct node * next;
+    struct node * previous;
     void *        data;
 } node;
 
@@ -16,7 +17,6 @@ typedef struct node
 typedef struct list
 {
     node *     head;
-    node *     tail;
     size_t     length;
     void     (*destructor)(void *);
 
@@ -172,6 +172,14 @@ void corgasm_listlib_clear(list * self);
  */
 void * corgasm_listlib_extract(node * n);
 
+/**
+ * @brief Removes node at a given index
+ * @param[in] list * self pointer to a list
+ * @param[in] size_t index of node to be removed
+ * @return bool if operation was successful
+ */
+bool corgasm_listlib_remove(list * self, size_t index);
+
 typedef struct corgasm_listlib_functions
 {
     void    (*destroy_wrapped) (void * self);
@@ -192,7 +200,8 @@ typedef struct corgasm_listlib_functions
     node *  (*next)            (node * current);
     node *  (*new_node)        (void * data);
     void *  (*extract)         (node * n);
-} corgasm_listlib_functions;
+    bool    (*remove)          (list * self, size_t index);
+    } corgasm_listlib_functions;
 
 
 
@@ -216,6 +225,7 @@ static const corgasm_listlib_functions listlib =
         .set             = corgasm_listlib_set,
         .clear           = corgasm_listlib_clear,
         .extract         = corgasm_listlib_extract,
+        .remove          = corgasm_listlib_remove
 };
 
 #define foreach_condition(type, varname, iterable, condition)    node * varname##_current = listlib.begin(iterable);   for (type varname = listlib.extract(varname##_current); varname##_current != listlib.end(iterable) && condition; varname##_current  = listlib.next(varname##_current), varname = (type)(listlib.extract(varname##_current)))

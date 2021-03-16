@@ -139,3 +139,7 @@ $(unit_target) : $(unit_object_files)
 	$(info )
 	$(info building unit target: $(unit_target))
 	$(compiler) $(unit_test_build_compiler_flags) $(unit_object_files) -o $@
+
+
+memtest:$(executable_target)
+	drmemory.exe -ignore_kernel -show_reachable ./$(executable_target).exe
