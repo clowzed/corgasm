@@ -27,7 +27,8 @@ void * corgasm_queuelib_get(const queue * self)
     {
         node * data_node = listlib.get(self->data, 0);
         data = data_node->data;
-        listlib.remove(self->data, 0);
+        size_t index = listlib.index_of(self->data, data);
+        listlib.remove(self->data, index);
     }
     return data;
 }
@@ -49,18 +50,3 @@ bool corgasm_queuelib_destroy(queue * self)
 {
     return  queuelib.destroy_with(self, NULL);
 }
-
-
-#ifdef LIB_BUILD_QUEULIB
-
-int main()
-{
-    queue * data = queuelib.new_queue();
-    for (int i = 0; i < 5 ; i++)
-        queuelib.put(data, NULL);
-    for (int i = 0; i < 5; i++)
-        printf("data: %p\n", queuelib.get(data));
-    queuelib.destroy(data);
-}
-
-#endif

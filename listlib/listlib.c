@@ -24,7 +24,7 @@ node * corgasm_listlib_new_node(void * data)
     return new_node;
 }
 
-void  corgasm_listlib_destroy_node(node * node_to_destroy, void (*destructor)(void *))
+void corgasm_listlib_destroy_node(node * node_to_destroy, void (*destructor)(void *))
 {
     if (node_to_destroy)
     {
@@ -229,28 +229,31 @@ void * corgasm_listlib_extract(node * n)
     return n ? n->data : NULL;
 }
 
-
 bool corgasm_listlib_remove(list * self, size_t index)
 {
     bool was_removed = false;
 
     if (self && index < self->length)
     {
-        if (index == 0)
+        if (self->length == 1 || index == 0)
         {
             node * node_to_remove = self->head;
-            self->head = node_to_remove->next;
-            self->destructor(node_to_remove->data);
-            free(node_to_remove);
+            if (node_to_remove)
+            {
+                self->head = node_to_remove->next;
+                free(node_to_remove);
+            }
         }
         else
         {
             node * node_to_remove = listlib.get(self, index);
             node * previous_node  = node_to_remove->previous;
             node * next_node      = node_to_remove->next;
-            self->destructor(node_to_remove->data);
-            previous_node->next  = next_node;
-            next_node->previous  = previous_node;
+            if (previous_node)
+                previous_node->next  = next_node;
+            if (next_node)
+                next_node->previous  = previous_node;
+
             free(node_to_remove);
         }
         self->length--;
