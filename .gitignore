@@ -45,3 +45,5 @@
 # Kernel Module Compile Results
 *.mod*
 *.cmd
+
+.vscode/**/*
