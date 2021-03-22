@@ -39,7 +39,7 @@ all: clean building run
 building: $(executable_target)
 
 
-dependencies =
+dependencies = stringlib
 
 
 ifneq ($(dependencies), )
