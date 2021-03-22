@@ -27,6 +27,8 @@
 | configlib   | 🟢    | 🟢  | 🔴   | 🔴         |
 | memtestlib  | 🟢    | 🟢  | 🔴   | 🔴         |
 | qrclib      | 🟢    | 🟢  | 🟢   | 🔴         |
+\queuelib\🟢    | 🟢  | 🟢   | 🔴         |
+|progresslib|🟢    | 🟢  | 🟢   | 🔴         |
 
 https://www.mobilefish.com/services/markdown/markdown.php
 Place converted html table into this div
@@ -123,6 +125,20 @@ Place converted html table into this div
             </tr>
             <tr>
                 <td align="center">qrclib</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
+                <td align="center">🔴</td>
+            </tr>
+            <tr>
+                <td align="center">queuelib</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
+                <td align="center">🟢</td>
+                <td align="center">🔴</td>
+            </tr>
+            <tr>
+                <td align="center">progresslib</td>
                 <td align="center">🟢</td>
                 <td align="center">🟢</td>
                 <td align="center">🟢</td>
